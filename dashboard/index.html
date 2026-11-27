@@ -3,141 +3,347 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Keamanan Cloud - JagaAwan</title>
+  <title>JagaAwan — Cloud Storage Security Posture Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 29, 47, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --radius: 16px;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f4f6f9;
-      color: #212529;
-      padding: 2rem 1rem;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      padding: 1.5rem;
     }
 
     .container {
-      max-width: 1050px;
+      max-width: 1200px;
       margin: 0 auto;
       width: 100%;
       flex: 1;
     }
 
+    /* Header Nav */
     header {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 2.2rem;
-      color: #1a202c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    header p {
-      color: #6c757d;
-      margin-top: 0.3rem;
-    }
-
-    /* Score Card */
-    .score-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      margin-bottom: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .score-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #4a5568;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .score-circle {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.2rem;
-      font-weight: 800;
-      color: #ffffff;
-      margin: 1.2rem 0;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      transition: background-color 0.3s;
-    }
-
-    .score-meta {
-      font-size: 0.9rem;
-      color: #718096;
-    }
-
-    /* Status Colors */
-    .score-green  { background-color: #28a745; }
-    .score-yellow { background-color: #ffc107; color: #212529 !important; }
-    .score-red    { background-color: #dc3545; }
-
-    .badge {
-      display: inline-block;
-      padding: 0.35rem 0.75rem;
-      border-radius: 50px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-align: center;
-    }
-    .badge-tinggi { background-color: #f8d7da; color: #721c24; }
-    .badge-sedang { background-color: #fff3cd; color: #856404; }
-    .badge-rendah { background-color: #d1ecf1; color: #0c5460; }
-    .badge-aman   { background-color: #d4edda; color: #155724; }
-
-    /* Controls */
-    .controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 0 2rem 0;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.2rem;
     }
 
-    .controls h2 {
-      font-size: 1.3rem;
-      color: #2d3748;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
     }
 
-    .btn-refresh {
-      background-color: #2b6cb0;
-      color: #fff;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 0 25px var(--primary-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 0.45rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .btn {
+      background: #1e293b;
+      color: #f1f5f9;
+      border: 1px solid var(--card-border);
+      padding: 0.55rem 1.1rem;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: background-color 0.2s;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
     }
-    .btn-refresh:hover { background-color: #2c5282; }
 
-    /* Findings Table */
-    .table-container {
-      background: #ffffff;
-      border-radius: 12px;
+    .btn:hover {
+      background: #334155;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-color: #3b82f6;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+    }
+
+    /* Metric Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Score Card Specialty */
+    .score-card {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .score-gauge {
+      width: 96px;
+      height: 96px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .score-gauge svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .score-gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 8;
+    }
+
+    .score-gauge-val {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 264;
+      stroke-dashoffset: 264;
+      transition: stroke-dashoffset 1s ease, stroke 0.3s;
+    }
+
+    .score-number {
+      position: absolute;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .score-info h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .score-badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      margin-bottom: 0.4rem;
+    }
+
+    .score-time {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Small Stat Cards */
+    .stat-card h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Tab & Search Control Bar */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 0.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: #1e293b;
+      color: #fff;
+    }
+
+    .search-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.45rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 260px;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+
+    .search-box input::placeholder { color: #64748b; }
+
+    /* Table Container */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
     table {
@@ -147,112 +353,305 @@
     }
 
     th {
-      background-color: #edf2f7;
-      color: #4a5568;
-      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.85);
+      color: #94a3b8;
+      font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 1rem 1.2rem;
-      border-bottom: 2px solid #e2e8f0;
+      letter-spacing: 0.08em;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--card-border);
     }
 
     td {
-      padding: 1.1rem 1.2rem;
-      border-bottom: 1px solid #edf2f7;
+      padding: 1.15rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.88rem;
       vertical-align: top;
-      font-size: 0.95rem;
       line-height: 1.5;
     }
 
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background-color: #f7fafc; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
-    .bucket-name {
+    .bucket-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
       font-weight: 600;
-      font-family: monospace;
-      color: #2b6cb0;
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
-    /* Error & Empty States */
-    .alert-box {
+    .risk-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      letter-spacing: 0.04em;
+    }
+
+    .risk-tinggi {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .risk-sedang {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .risk-rendah {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .risk-aman {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .advice-box {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #3b82f6;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+    }
+
+    .alert-banner {
       display: none;
-      padding: 1rem 1.4rem;
-      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
       margin-bottom: 1.5rem;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
     }
-    .alert-error {
-      background-color: #fed7d7;
-      color: #9b2c2c;
-      border: 1px solid #feb2b2;
+
+    /* Remediation modal / guide */
+    .quick-guide {
+      margin-top: 2rem;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.6));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
     }
+
+    .quick-guide h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .steps-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .step-item {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .step-item span.num {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-item h5 { font-size: 0.88rem; margin-bottom: 0.35rem; }
+    .step-item p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
 
     footer {
       text-align: center;
       margin-top: 3rem;
-      color: #a0aec0;
-      font-size: 0.85rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: #64748b;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
+    <div id="alert-box" class="alert-banner" role="alert"></div>
+
+    <!-- Header Navigation -->
     <header>
-      <h1>🛡️ JagaAwan Dashboard</h1>
-      <p>Pemantauan Postur Keamanan Google Cloud Storage untuk UMKM</p>
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-title">
+          <h1>JagaAwan Security Posture</h1>
+          <p>Pemantau &amp; Pemindai Otomatis Misconfiguration Cloud Storage UMKM</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="badge-status">
+          <div class="pulse-dot"></div>
+          <span>Cloud Storage Guard Active</span>
+        </div>
+        <button class="btn btn-primary" onclick="fetchScanResults()">
+          🔄 Scan Ulang
+        </button>
+        <button class="btn" onclick="exportJSON()">
+          📥 Export JSON
+        </button>
+      </div>
     </header>
 
-    <div id="alert-box" class="alert-box alert-error" role="alert"></div>
-
-    <section class="score-card">
-      <div class="score-title">Skor Keamanan Cloud</div>
-      <div id="score-circle" class="score-circle score-green">-</div>
-      <div class="score-meta">
-        Waktu Pemindaian Terakhir: <strong id="scan-time">-</strong>
+    <!-- Top Key Metrics Cards -->
+    <div class="metrics-grid">
+      <!-- 1. Score Card Gauge -->
+      <div class="card score-card">
+        <div class="score-gauge">
+          <svg viewBox="0 0 100 100">
+            <circle class="score-gauge-bg" cx="50" cy="50" r="42"></circle>
+            <circle id="gauge-circle" class="score-gauge-val" cx="50" cy="50" r="42" stroke="#10b981"></circle>
+          </svg>
+          <div id="score-number" class="score-number">-</div>
+        </div>
+        <div class="score-info">
+          <h3>Health Score</h3>
+          <div id="score-status-badge" class="score-badge risk-aman">Memuat...</div>
+          <div class="score-time">Scan: <span id="scan-time">-</span></div>
+        </div>
       </div>
-    </section>
 
-    <div class="controls">
-      <h2>Daftar Temuan &amp; Rekomendasi</h2>
-      <button class="btn-refresh" onclick="fetchScanResults()">🔄 Muat Ulang Data</button>
+      <!-- 2. Total Buckets -->
+      <div class="card stat-card">
+        <h4>Total Buckets <span>📦</span></h4>
+        <div id="stat-total" class="stat-number">0</div>
+        <div class="stat-sub">Bucket Cloud Storage terdaftar</div>
+      </div>
+
+      <!-- 3. Critical Risks -->
+      <div class="card stat-card">
+        <h4>Risiko Tinggi <span>🚨</span></h4>
+        <div id="stat-high" class="stat-number" style="color: #ef4444;">0</div>
+        <div class="stat-sub">Akses publik tanpa proteksi</div>
+      </div>
+
+      <!-- 4. Low / Safe Buckets -->
+      <div class="card stat-card">
+        <h4>Aman / Minor <span>✅</span></h4>
+        <div id="stat-safe" class="stat-number" style="color: #10b981;">0</div>
+        <div class="stat-sub">Konfigurasi memenuhi standar</div>
+      </div>
     </div>
 
-    <div class="table-container">
+    <!-- Controls & Filter Toolbar -->
+    <div class="section-header">
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setFilter('ALL', this)">Semua (<span id="count-all">0</span>)</button>
+        <button class="filter-btn" onclick="setFilter('TINGGI', this)">Tinggi (<span id="count-tinggi">0</span>)</button>
+        <button class="filter-btn" onclick="setFilter('SEDANG', this)">Sedang (<span id="count-sedang">0</span>)</button>
+        <button class="filter-btn" onclick="setFilter('RENDAH', this)">Rendah (<span id="count-rendah">0</span>)</button>
+        <button class="filter-btn" onclick="setFilter('AMAN', this)">Aman (<span id="count-aman">0</span>)</button>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="search-input" placeholder="Cari nama bucket..." oninput="handleSearch()" />
+      </div>
+    </div>
+
+    <!-- Findings Table -->
+    <div class="table-card">
       <table>
         <thead>
           <tr>
-            <th style="width: 25%;">Nama Bucket</th>
-            <th style="width: 15%;">Tingkat Risiko</th>
-            <th style="width: 30%;">Penjelasan Awam</th>
-            <th style="width: 30%;">Saran Perbaikan</th>
+            <th style="width: 22%;">Nama Bucket</th>
+            <th style="width: 14%;">Tingkat Risiko</th>
+            <th style="width: 32%;">Penjelasan Temuan</th>
+            <th style="width: 32%;">Saran &amp; Rekomendasi Aksi</th>
           </tr>
         </thead>
         <tbody id="findings-table-body">
           <tr>
-            <td colspan="4" style="text-align: center; color: #a0aec0; padding: 2rem;">
-              Memuat data hasil pemindaian...
+            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 3rem;">
+              Sedang mengambil data hasil scan dari server...
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <!-- Quick Remediation Playbook -->
+    <section class="quick-guide">
+      <h3>📘 Langkah Cepat Remediasi untuk UMKM</h3>
+      <p style="font-size: 0.85rem; color: #94a3b8;">Panduan cepat jika bucket Anda terdeteksi berisiko Tinggi atau Sedang:</p>
+      <div class="steps-list">
+        <div class="step-item">
+          <span class="num">1</span>
+          <h5>Ubah ke Private Bucket</h5>
+          <p>Masuk ke Supabase/GCP Console, buka konfigurasi bucket foto, dan matikan akses <code>Public</code> agar data tidak bisa diakses publik langsung.</p>
+        </div>
+        <div class="step-item">
+          <span class="num">2</span>
+          <h5>Gunakan Signed URL</h5>
+          <p>Gunakan endpoint <code>/signed_url</code> di backend JagaAwan untuk memberikan tautan berbatas waktu (misal 5 menit) untuk katalog produk.</p>
+        </div>
+        <div class="step-item">
+          <span class="num">3</span>
+          <h5>Atur File Limits</h5>
+          <p>Terapkan <code>file_size_limit</code> (misal maks 5MB) dan batasi MIME type hanya untuk gambar (JPEG/PNG/WEBP) guna mencegah malware.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
-      Proyek JagaAwan &mdash; Kelompok Teori Komputasi Awan (Data Uji Fiktif)
+      <div>Proyek JagaAwan &bull; Sistem Pemantau Keamanan Cloud Storage Otomatis untuk UMKM</div>
+      <div>Standard Aturan: <strong>PAP &amp; IAM Security Matrix v2.1</strong></div>
     </footer>
   </div>
 
   <script>
-    // Konfigurasi endpoint:
-    // Default memakai "data-contoh.json" saat lokal / belum deploy Cloud Function.
-    // Dapat diarahkan ke URL Cloud Function "results" via query string ?api=https://...
     const params = new URLSearchParams(window.location.search);
     const API_URL = params.get("api") || "data-contoh.json";
 
+    let rawData = null;
+    let currentFilter = "ALL";
+    let searchQuery = "";
+
     function potong(str) {
-      return String(str || "").slice(0, 300);
+      return String(str || "").slice(0, 400);
     }
 
     function formatScanTime(raw) {
@@ -274,31 +673,89 @@
     }
 
     function updateScoreDisplay(skor) {
-      const circle = document.getElementById("score-circle");
-      circle.textContent = skor;
-      circle.className = "score-circle";
+      const scoreElem = document.getElementById("score-number");
+      const badgeElem = document.getElementById("score-status-badge");
+      const gauge = document.getElementById("gauge-circle");
+
+      scoreElem.textContent = skor;
+
+      // Circle circumference = 2 * PI * 42 ≈ 264
+      const circumference = 264;
+      const offset = circumference - (skor / 100) * circumference;
+      gauge.style.strokeDashoffset = offset;
 
       if (skor >= 80) {
-        circle.classList.add("score-green");
+        gauge.style.stroke = "#10b981";
+        badgeElem.textContent = "Sangat Aman (Sehat)";
+        badgeElem.className = "score-badge risk-aman";
       } else if (skor >= 50) {
-        circle.classList.add("score-yellow");
+        gauge.style.stroke = "#f59e0b";
+        badgeElem.textContent = "Perlu Perhatian";
+        badgeElem.className = "score-badge risk-sedang";
       } else {
-        circle.classList.add("score-red");
+        gauge.style.stroke = "#ef4444";
+        badgeElem.textContent = "Kritis / Rentan";
+        badgeElem.className = "score-badge risk-tinggi";
       }
     }
 
-    function renderFindings(findings) {
+    function updateCounters(findings) {
+      const list = findings || [];
+      const counts = { TINGGI: 0, SEDANG: 0, RENDAH: 0, AMAN: 0 };
+
+      list.forEach(item => {
+        const r = String(item.risiko || "").toUpperCase();
+        if (counts[r] !== undefined) counts[r]++;
+      });
+
+      document.getElementById("stat-total").textContent = list.length;
+      document.getElementById("stat-high").textContent = counts.TINGGI;
+      document.getElementById("stat-safe").textContent = counts.RENDAH + counts.AMAN;
+
+      document.getElementById("count-all").textContent = list.length;
+      document.getElementById("count-tinggi").textContent = counts.TINGGI;
+      document.getElementById("count-sedang").textContent = counts.SEDANG;
+      document.getElementById("count-rendah").textContent = counts.RENDAH;
+      document.getElementById("count-aman").textContent = counts.AMAN;
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      renderFilteredFindings();
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById("search-input").value.toLowerCase().trim();
+      renderFilteredFindings();
+    }
+
+    function renderFilteredFindings() {
+      if (!rawData || !Array.isArray(rawData.temuan)) return;
+
+      const filtered = rawData.temuan.filter(item => {
+        const risk = String(item.risiko || "").toUpperCase();
+        const matchesFilter = (currentFilter === "ALL") || (risk === currentFilter);
+        const matchesSearch = !searchQuery || String(item.bucket || "").toLowerCase().includes(searchQuery);
+        return matchesFilter && matchesSearch;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderTable(findings) {
       const tbody = document.getElementById("findings-table-body");
       tbody.replaceChildren();
 
-      if (!Array.isArray(findings) || findings.length === 0) {
+      if (findings.length === 0) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
         td.colSpan = 4;
         td.style.textAlign = "center";
-        td.style.padding = "2rem";
-        td.style.color = "#28a745";
-        td.textContent = "🎉 Selamat! Tidak ditemukan konfigurasi berisiko pada bucket Cloud Storage Anda.";
+        td.style.padding = "3rem";
+        td.style.color = "#94a3b8";
+        td.textContent = "Tidak ada temuan yang sesuai dengan filter pencarian.";
         tr.appendChild(td);
         tbody.appendChild(tr);
         return;
@@ -307,37 +764,56 @@
       findings.forEach(t => {
         const tr = document.createElement("tr");
 
-        // 1. Bucket
+        // 1. Bucket Name
         const tdBucket = document.createElement("td");
-        tdBucket.className = "bucket-name";
-        tdBucket.textContent = potong(t.bucket);
+        const badgeBucket = document.createElement("div");
+        badgeBucket.className = "bucket-badge";
+        badgeBucket.innerHTML = `<span>🪣</span> <span>${potong(t.bucket)}</span>`;
+        tdBucket.appendChild(badgeBucket);
         tr.appendChild(tdBucket);
 
-        // 2. Risiko Badge
+        // 2. Risk Level Pill
         const tdRisk = document.createElement("td");
-        const badge = document.createElement("span");
-        const risk = String(t.risiko || "").toUpperCase();
-        badge.className = "badge";
-        if (risk === "TINGGI") badge.classList.add("badge-tinggi");
-        else if (risk === "SEDANG") badge.classList.add("badge-sedang");
-        else if (risk === "RENDAH") badge.classList.add("badge-rendah");
-        else badge.classList.add("badge-aman");
-        badge.textContent = risk;
-        tdRisk.appendChild(badge);
+        const riskPill = document.createElement("span");
+        const risk = String(t.risiko || "AMAN").toUpperCase();
+        riskPill.className = "risk-pill " + (
+          risk === "TINGGI" ? "risk-tinggi" :
+          risk === "SEDANG" ? "risk-sedang" :
+          risk === "RENDAH" ? "risk-rendah" : "risk-aman"
+        );
+        riskPill.textContent = (risk === "TINGGI" ? "🚨 " : risk === "SEDANG" ? "⚠️ " : "✅ ") + risk;
+        tdRisk.appendChild(riskPill);
         tr.appendChild(tdRisk);
 
-        // 3. Penjelasan (Secure textContent)
+        // 3. Explanation
         const tdPenjelasan = document.createElement("td");
         tdPenjelasan.textContent = potong(t.penjelasan);
         tr.appendChild(tdPenjelasan);
 
-        // 4. Saran (Secure textContent)
+        // 4. Recommendation & Advice
         const tdSaran = document.createElement("td");
-        tdSaran.textContent = potong(t.saran);
+        const adviceBox = document.createElement("div");
+        adviceBox.className = "advice-box";
+        adviceBox.textContent = potong(t.saran);
+        tdSaran.appendChild(adviceBox);
         tr.appendChild(tdSaran);
 
         tbody.appendChild(tr);
       });
+    }
+
+    function exportJSON() {
+      if (!rawData) {
+        alert("Belum ada data hasil scan yang dimuat.");
+        return;
+      }
+      const blob = new Blob([JSON.stringify(rawData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `jagaawan-scan-${rawData.scan_id || "report"}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     async function fetchScanResults() {
@@ -349,15 +825,16 @@
         }
         const data = await res.json();
 
-        // Validasi format angka skor
         const skor = Number(data.skor);
         if (!Number.isInteger(skor) || skor < 0 || skor > 100) {
           throw new Error("Format skor yang diterima dari API tidak valid.");
         }
 
+        rawData = data;
         updateScoreDisplay(skor);
         document.getElementById("scan-time").textContent = formatScanTime(data.timestamp || data.scan_id);
-        renderFindings(data.temuan || []);
+        updateCounters(data.temuan);
+        renderFilteredFindings();
       } catch (err) {
         showAlert("Peringatan: " + err.message);
         const tbody = document.getElementById("findings-table-body");
@@ -365,8 +842,8 @@
         const td = document.createElement("td");
         td.colSpan = 4;
         td.style.textAlign = "center";
-        td.style.color = "#dc3545";
-        td.style.padding = "2rem";
+        td.style.color = "#ef4444";
+        td.style.padding = "3rem";
         td.textContent = "Gagal memuat hasil scan. Pastikan endpoint API aktif atau data-contoh.json tersedia.";
         tr.appendChild(td);
         tbody.replaceChildren(tr);
@@ -376,6 +853,5 @@
     // Jalankan saat pertama dibuka
     fetchScanResults();
   </script>
-
 </body>
 </html>
