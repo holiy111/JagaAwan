@@ -165,8 +165,10 @@
   </footer>
 
   <script>
+    const SUPABASE_URL = 'https://PROJECT_REF.supabase.co';
     const BUCKET = 'NAMA_BUCKET_FOTO';
-    const IMAGE_BASE_URL = `https://storage.googleapis.com/${BUCKET}/produk/`;
+    const IMAGE_BASE_URL = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/produk/`;
+    const SIGNED_API = new URLSearchParams(window.location.search).get('signed_api');
 
     const products = [
       { name: 'Kemeja Batik Parang',            price: 285000, image: 'kemeja-parang-01.jpg' },
@@ -197,7 +199,17 @@
       wrapper.className = 'img-wrapper';
 
       const img = document.createElement('img');
-      img.src = IMAGE_BASE_URL + product.image;
+      if (SIGNED_API) {
+        fetch(`${SIGNED_API}?bucket=${encodeURIComponent(BUCKET)}&path=${encodeURIComponent('produk/' + product.image)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.signed_url) img.src = data.signed_url;
+            else handleImgError(img, wrapper);
+          })
+          .catch(() => handleImgError(img, wrapper));
+      } else {
+        img.src = IMAGE_BASE_URL + product.image;
+      }
       img.alt = product.name;
       img.loading = 'lazy';
       img.onerror = function() { handleImgError(img, wrapper); };

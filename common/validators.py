@@ -14,7 +14,7 @@ def sanitize_bucket_name(raw: str) -> str:
     if not 3 <= len(name) <= 63:
         raise ValueError(f"Panjang nama bucket harus 3-63 karakter (diterima: {len(name)}).")
     if not BUCKET_RE.fullmatch(name):
-        raise ValueError("Nama bucket hanya boleh mengandung huruf kecil, angka, dan tanda hubung.")
+        raise ValueError("Nama bucket hanya boleh mengandung karakter huruf kecil, angka, dan tanda hubung.")
     if name.startswith(("goog", "google")):
         raise ValueError("Nama bucket tidak boleh diawali kata yang dicadangkan Google.")
     return name

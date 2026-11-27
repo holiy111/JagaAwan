@@ -246,12 +246,20 @@
 
   <script>
     // Konfigurasi endpoint:
-    // Gunakan "data-contoh.json" saat lokal / belum deploy Cloud Function
-    // Ganti dengan URL Cloud Function "results" publik dari Orang 1 saat online
-    const API_URL = "data-contoh.json";
+    // Default memakai "data-contoh.json" saat lokal / belum deploy Cloud Function.
+    // Dapat diarahkan ke URL Cloud Function "results" via query string ?api=https://...
+    const params = new URLSearchParams(window.location.search);
+    const API_URL = params.get("api") || "data-contoh.json";
 
     function potong(str) {
       return String(str || "").slice(0, 300);
+    }
+
+    function formatScanTime(raw) {
+      if (!raw) return "Baru saja";
+      const parsed = new Date(raw);
+      if (Number.isNaN(parsed.getTime())) return String(raw);
+      return parsed.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
     }
 
     function showAlert(msg) {
@@ -348,17 +356,20 @@
         }
 
         updateScoreDisplay(skor);
-        document.getElementById("scan-time").textContent = data.scan_id || "Baru saja";
+        document.getElementById("scan-time").textContent = formatScanTime(data.timestamp || data.scan_id);
         renderFindings(data.temuan || []);
       } catch (err) {
         showAlert("Peringatan: " + err.message);
-        document.getElementById("findings-table-body").innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align: center; color: #dc3545; padding: 2rem;">
-              Gagal memuat hasil scan. Pastikan endpoint API aktif atau data-contoh.json tersedia.
-            </td>
-          </tr>
-        `;
+        const tbody = document.getElementById("findings-table-body");
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.style.textAlign = "center";
+        td.style.color = "#dc3545";
+        td.style.padding = "2rem";
+        td.textContent = "Gagal memuat hasil scan. Pastikan endpoint API aktif atau data-contoh.json tersedia.";
+        tr.appendChild(td);
+        tbody.replaceChildren(tr);
       }
     }
 
