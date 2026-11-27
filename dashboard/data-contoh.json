@@ -1,30 +1,18 @@
 {
-  "scan_id": "2026-11-05T01:00:00Z",
-  "skor": 62,
+  "scan_id": "2026-11-27T15:08:10Z",
+  "timestamp": "2026-11-27T15:08:10.055319+00:00",
+  "skor": 70,
+  "jumlah_bucket": 1,
   "temuan": [
     {
-      "bucket": "jagaawan-data-4827",
-      "risiko": "TINGGI",
       "kode": "BUCKET_PUBLIK",
-      "penjelasan": "Siapa pun di internet bisa mengunduh semua file di sini.",
-      "saran": "Aktifkan Public Access Prevention dan hapus akses allUsers.",
-      "kurang": 30
-    },
-    {
+      "saran": "Ubah bucket menjadi privat (public=false), gunakan Signed URL untuk akses file, serta atur file_size_limit dan allowed_mime_types.",
       "bucket": "jagaawan-foto-4827",
-      "risiko": "SEDANG",
-      "kode": "BUCKET_PUBLIK",
-      "penjelasan": "Terdapat aturan izin publik, tetapi ditahan oleh Public Access Prevention yang aktif.",
-      "saran": "Hapus binding allUsers dari IAM policy bucket agar konfigurasi bersih dan aman.",
-      "kurang": 15
-    },
-    {
-      "bucket": "jagaawan-backup-4827",
-      "risiko": "AMAN",
-      "kode": "AMAN",
-      "penjelasan": "Konfigurasi bucket aman. Akses publik diblokir dan pengaman aktif.",
-      "saran": "Pertahankan konfigurasi saat ini.",
-      "kurang": 0
+      "kurang": 30,
+      "publik": true,
+      "risiko": "TINGGI",
+      "terbatas": false,
+      "penjelasan": "Bucket bersifat publik dan belum memiliki pembatasan ukuran atau tipe file."
     }
   ]
 }
